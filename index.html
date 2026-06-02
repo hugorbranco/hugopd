@@ -256,7 +256,7 @@
     .ss-ph-label { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--gray); user-select: none; }
     .ss-ph-num { font-size: 56px; font-weight: 800; letter-spacing: -2px; opacity: .18; }
     .ss-ph-text { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .4; }
-    .ss-controls { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; display: flex; align-items: flex-end; gap: 10px; padding: 48px 18px 18px; background: linear-gradient(transparent, rgba(0,0,0,.65)); }
+    .ss-controls { position: absolute; bottom: 14px; left: 14px; right: 14px; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: rgba(8,8,8,.72); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border-radius: 12px; }
     .ss-btn { width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.32); background: rgba(0,0,0,.28); backdrop-filter: blur(10px); color: #fff; cursor: none; display: flex; align-items: center; justify-content: center; transition: background .2s, border-color .2s; }
     .ss-btn:hover { background: rgba(0,0,0,.6); border-color: rgba(255,255,255,.8); }
     .ss-btn path { stroke: #fff; }
@@ -274,7 +274,9 @@
     .ss-fs-btn[data-fs] .fs-compress { display: block; }
     .ss-stage:-webkit-full-screen { border-radius: 0!important; }
     .ss-stage:fullscreen { border-radius: 0!important; }
-    @media(max-width:1024px) { .ss-header { padding: 40px 40px 24px; } .ss-controls { padding: 36px 14px 14px; } }
+    .ss-stage:fullscreen, .ss-stage:fullscreen * { cursor: default!important; }
+    .ss-stage:-webkit-full-screen, .ss-stage:-webkit-full-screen * { cursor: default!important; }
+    @media(max-width:1024px) { .ss-header { padding: 40px 40px 24px; } .ss-controls { bottom: 10px; left: 10px; right: 10px; } }
     @media(max-width:640px) { .ss-step-title { display: none; } }
     @media(max-width:640px) { .ss-stage { aspect-ratio: 4/3; } .process-slideshow { margin-top: 56px; padding-bottom: 56px; } }
 
@@ -1140,6 +1142,9 @@
       });
     }
 
+    /* expose navigation for keyboard handler */
+    stage._ss = { next: () => goTo(cur + 1), prev: () => goTo(cur - 1) };
+
     /* touch swipe */
     let ts2 = 0;
     stage.addEventListener('touchstart', e => { ts2 = e.touches[0].clientX; });
@@ -1149,6 +1154,22 @@
     });
 
     updateStepper(0);
+  });
+
+  /* ── slideshow keyboard navigation ── */
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' &&
+        e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    const fsEl = document.fullscreenElement;
+    let stage = fsEl?.closest('[data-slideshow]') || fsEl?.matches('[data-slideshow]') && fsEl;
+    if (!stage) {
+      const activePage = document.querySelector('.page.active');
+      stage = activePage?.querySelector('[data-slideshow]');
+    }
+    if (!stage?._ss) return;
+    e.preventDefault();
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') stage._ss.next();
+    else stage._ss.prev();
   });
 
   /* ── scroll reveal ── */
