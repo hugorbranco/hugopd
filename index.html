@@ -42,7 +42,8 @@
     .nav-dropdown:hover .nav-dd-btn::after, .nav-dd-btn.active::after { width:100%; }
     .dd-chevron { transition:transform .25s var(--ease); flex-shrink:0; }
     .nav-dropdown:hover .dd-chevron { transform:rotate(180deg); }
-    .nav-dd-menu { position:absolute; top:calc(100% + 18px); left:50%; transform:translateX(-50%) translateY(-6px); background:#fff; border-radius:14px; padding:6px; min-width:210px; box-shadow:0 8px 40px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.05); opacity:0; pointer-events:none; transition:opacity .2s var(--ease),transform .2s var(--ease); z-index:10; }
+    .nav-dropdown::before { content:""; position:absolute; top:100%; left:-12px; right:-12px; height:14px; z-index:9; }
+    .nav-dd-menu { position:absolute; top:calc(100% + 12px); left:50%; transform:translateX(-50%) translateY(-4px); background:#fff; border-radius:14px; padding:6px; min-width:210px; box-shadow:0 8px 40px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.05); opacity:0; pointer-events:none; transition:opacity .2s var(--ease),transform .2s var(--ease); z-index:10; }
     .nav-dropdown:hover .nav-dd-menu { opacity:1; pointer-events:all; transform:translateX(-50%) translateY(0); }
     .nav-dd-item { display:block; padding:10px 14px; font-size:14px; font-weight:600; color:var(--black); text-decoration:none; border-radius:8px; transition:background .15s; white-space:nowrap; }
     .nav-dd-item:hover { background:var(--bg); }
