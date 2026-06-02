@@ -255,18 +255,26 @@
     .ss-ph-label { display: flex; flex-direction: column; align-items: center; gap: 10px; color: var(--gray); user-select: none; }
     .ss-ph-num { font-size: 56px; font-weight: 800; letter-spacing: -2px; opacity: .18; }
     .ss-ph-text { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .4; }
-    .ss-controls { position: absolute; bottom: 24px; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; pointer-events: none; }
-    .ss-controls > * { pointer-events: all; }
-    .ss-arrows { display: flex; gap: 8px; }
-    .ss-btn { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.35); background: rgba(0,0,0,.3); backdrop-filter: blur(10px); color: #fff; cursor: none; display: flex; align-items: center; justify-content: center; transition: background .2s, border-color .2s; }
-    .ss-btn:hover { background: rgba(0,0,0,.65); border-color: rgba(255,255,255,.85); }
+    .ss-controls { position: absolute; bottom: 0; left: 0; right: 0; z-index: 2; display: flex; align-items: flex-end; gap: 10px; padding: 48px 18px 18px; background: linear-gradient(transparent, rgba(0,0,0,.65)); }
+    .ss-btn { width: 36px; height: 36px; flex-shrink: 0; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.32); background: rgba(0,0,0,.28); backdrop-filter: blur(10px); color: #fff; cursor: none; display: flex; align-items: center; justify-content: center; transition: background .2s, border-color .2s; }
+    .ss-btn:hover { background: rgba(0,0,0,.6); border-color: rgba(255,255,255,.8); }
     .ss-btn path { stroke: #fff; }
-    .ss-count { font-size: 12px; font-weight: 700; color: rgba(255,255,255,.8); letter-spacing: .07em; background: rgba(0,0,0,.3); backdrop-filter: blur(10px); padding: 6px 14px; border-radius: 100px; }
-    /* dark overlay adjustments when slides are placeholders */
-    .ss-placeholder .ss-controls .ss-btn { border-color: rgba(0,0,0,.18); background: rgba(0,0,0,.06); }
-    .ss-placeholder .ss-controls .ss-btn path { stroke: var(--black); }
-    .ss-placeholder .ss-controls .ss-count { color: var(--gray); background: rgba(0,0,0,.06); }
-    @media(max-width:1024px) { .ss-header { padding: 40px 40px 24px; } .ss-controls { padding: 0 20px; } }
+    .ss-stepper { flex: 1; display: flex; gap: 8px; align-items: flex-end; min-width: 0; }
+    .ss-step { flex: 1; display: flex; flex-direction: column; gap: 6px; cursor: none; min-width: 0; }
+    .ss-step-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,.22); transition: background .4s var(--ease); }
+    .ss-step[data-state=active] .ss-step-bar, .ss-step[data-state=completed] .ss-step-bar { background: rgba(255,255,255,.9); }
+    .ss-step-title { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.42); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .4s var(--ease); font-family: 'Manrope',sans-serif; }
+    .ss-step[data-state=active] .ss-step-title { color: rgba(255,255,255,.92); }
+    .ss-step[data-state=completed] .ss-step-title { color: rgba(255,255,255,.58); }
+    .ss-fs-btn { position: absolute; top: 14px; right: 14px; z-index: 3; width: 34px; height: 34px; border-radius: 8px; border: none; background: rgba(0,0,0,.28); backdrop-filter: blur(10px); color: #fff; cursor: none; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .ss-fs-btn:hover { background: rgba(0,0,0,.55); }
+    .ss-fs-btn .fs-compress { display: none; }
+    .ss-fs-btn[data-fs] .fs-expand { display: none; }
+    .ss-fs-btn[data-fs] .fs-compress { display: block; }
+    .ss-stage:-webkit-full-screen { border-radius: 0!important; }
+    .ss-stage:fullscreen { border-radius: 0!important; }
+    @media(max-width:1024px) { .ss-header { padding: 40px 40px 24px; } .ss-controls { padding: 36px 14px 14px; } }
+    @media(max-width:640px) { .ss-step-title { display: none; } }
     @media(max-width:640px) { .ss-stage { aspect-ratio: 4/3; } .process-slideshow { margin-top: 56px; padding-bottom: 56px; } }
 
     @media(max-width:1024px) {
@@ -536,21 +544,23 @@
     <p data-i18n="slideshow.sub">A closer look at every step of the design process.</p>
   </div>
   <div class="ss-stage" data-slideshow>
-    <div class="ss-slide ss-placeholder ss-active">
+    <div class="ss-slide ss-placeholder ss-active" data-title="Step 1">
       <div class="ss-ph-label"><div class="ss-ph-num">01</div><div class="ss-ph-text">Add slide</div></div>
     </div>
-    <div class="ss-slide ss-placeholder">
+    <div class="ss-slide ss-placeholder" data-title="Step 2">
       <div class="ss-ph-label"><div class="ss-ph-num">02</div><div class="ss-ph-text">Add slide</div></div>
     </div>
-    <div class="ss-slide ss-placeholder">
+    <div class="ss-slide ss-placeholder" data-title="Step 3">
       <div class="ss-ph-label"><div class="ss-ph-num">03</div><div class="ss-ph-text">Add slide</div></div>
     </div>
+    <button class="ss-fs-btn" data-ss-fs aria-label="Fullscreen">
+      <svg class="fs-expand" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 5V2h3M9 2h3v3M13 9v3h-3M5 13H2v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="fs-compress" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2v3H1M10 5V2h3M10 12v-3h3M1 9h3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <div class="ss-controls">
-      <div class="ss-count" data-ss-count>01 / 03</div>
-      <div class="ss-arrows">
-        <button class="ss-btn ss-prev" data-ss-prev><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="ss-btn ss-next" data-ss-next><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      </div>
+      <button class="ss-btn ss-prev" data-ss-prev><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <nav class="ss-stepper" data-ss-stepper></nav>
+      <button class="ss-btn ss-next" data-ss-next><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
 </section>
@@ -618,21 +628,23 @@
     <p data-i18n="slideshow.sub">A closer look at every step of the design process.</p>
   </div>
   <div class="ss-stage" data-slideshow>
-    <div class="ss-slide ss-placeholder ss-active">
+    <div class="ss-slide ss-placeholder ss-active" data-title="Step 1">
       <div class="ss-ph-label"><div class="ss-ph-num">01</div><div class="ss-ph-text">Add slide</div></div>
     </div>
-    <div class="ss-slide ss-placeholder">
+    <div class="ss-slide ss-placeholder" data-title="Step 2">
       <div class="ss-ph-label"><div class="ss-ph-num">02</div><div class="ss-ph-text">Add slide</div></div>
     </div>
-    <div class="ss-slide ss-placeholder">
+    <div class="ss-slide ss-placeholder" data-title="Step 3">
       <div class="ss-ph-label"><div class="ss-ph-num">03</div><div class="ss-ph-text">Add slide</div></div>
     </div>
+    <button class="ss-fs-btn" data-ss-fs aria-label="Fullscreen">
+      <svg class="fs-expand" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 5V2h3M9 2h3v3M13 9v3h-3M5 13H2v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="fs-compress" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2v3H1M10 5V2h3M10 12v-3h3M1 9h3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <div class="ss-controls">
-      <div class="ss-count" data-ss-count>01 / 03</div>
-      <div class="ss-arrows">
-        <button class="ss-btn ss-prev" data-ss-prev><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="ss-btn ss-next" data-ss-next><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      </div>
+      <button class="ss-btn ss-prev" data-ss-prev><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <nav class="ss-stepper" data-ss-stepper></nav>
+      <button class="ss-btn ss-next" data-ss-next><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
 </section>
@@ -721,21 +733,23 @@
     <p data-i18n="slideshow.sub">A closer look at every step of the design process.</p>
   </div>
   <div class="ss-stage" data-slideshow>
-    <div class="ss-slide ss-placeholder ss-active">
+    <div class="ss-slide ss-placeholder ss-active" data-title="Step 1">
       <div class="ss-ph-label"><div class="ss-ph-num">01</div><div class="ss-ph-text">Add slide</div></div>
     </div>
-    <div class="ss-slide ss-placeholder">
+    <div class="ss-slide ss-placeholder" data-title="Step 2">
       <div class="ss-ph-label"><div class="ss-ph-num">02</div><div class="ss-ph-text">Add slide</div></div>
     </div>
-    <div class="ss-slide ss-placeholder">
+    <div class="ss-slide ss-placeholder" data-title="Step 3">
       <div class="ss-ph-label"><div class="ss-ph-num">03</div><div class="ss-ph-text">Add slide</div></div>
     </div>
+    <button class="ss-fs-btn" data-ss-fs aria-label="Fullscreen">
+      <svg class="fs-expand" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 5V2h3M9 2h3v3M13 9v3h-3M5 13H2v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="fs-compress" width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 2v3H1M10 5V2h3M10 12v-3h3M1 9h3v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
     <div class="ss-controls">
-      <div class="ss-count" data-ss-count>01 / 03</div>
-      <div class="ss-arrows">
-        <button class="ss-btn ss-prev" data-ss-prev><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="ss-btn ss-next" data-ss-next><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      </div>
+      <button class="ss-btn ss-prev" data-ss-prev><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <nav class="ss-stepper" data-ss-stepper></nav>
+      <button class="ss-btn ss-next" data-ss-next><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
   </div>
 </section>
@@ -1080,18 +1094,50 @@
   /* ── process slideshows ── */
   document.querySelectorAll('[data-slideshow]').forEach(stage => {
     const slides = Array.from(stage.querySelectorAll('.ss-slide'));
-    const counter = stage.querySelector('[data-ss-count]');
     const total = slides.length;
     let cur = 0;
+
+    /* build stepper from data-title attributes */
+    const stepperEl = stage.querySelector('[data-ss-stepper]');
+    const stepEls = slides.map((slide, i) => {
+      const title = slide.getAttribute('data-title') || ('Step ' + (i + 1));
+      const el = document.createElement('div');
+      el.className = 'ss-step';
+      el.innerHTML = '<div class="ss-step-bar"></div><span class="ss-step-title">' + title + '</span>';
+      el.addEventListener('click', () => goTo(i));
+      stepperEl.appendChild(el);
+      return el;
+    });
+
+    function updateStepper(c) {
+      stepEls.forEach((el, i) => {
+        if (i < c) el.setAttribute('data-state', 'completed');
+        else if (i === c) el.setAttribute('data-state', 'active');
+        else el.removeAttribute('data-state');
+      });
+    }
+
     function goTo(n) {
       slides[cur].classList.remove('ss-active');
       cur = ((n % total) + total) % total;
       slides[cur].classList.add('ss-active');
-      if (counter) counter.textContent =
-        String(cur + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+      updateStepper(cur);
     }
+
     stage.querySelector('[data-ss-next]')?.addEventListener('click', () => goTo(cur + 1));
     stage.querySelector('[data-ss-prev]')?.addEventListener('click', () => goTo(cur - 1));
+
+    /* fullscreen */
+    const fsBtn = stage.querySelector('[data-ss-fs]');
+    if (fsBtn) {
+      fsBtn.addEventListener('click', () => {
+        if (!document.fullscreenElement) stage.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      });
+      document.addEventListener('fullscreenchange', () => {
+        fsBtn.toggleAttribute('data-fs', document.fullscreenElement === stage);
+      });
+    }
 
     /* touch swipe */
     let ts2 = 0;
@@ -1100,6 +1146,8 @@
       const d = ts2 - e.changedTouches[0].clientX;
       if (Math.abs(d) > 40) d > 0 ? goTo(cur + 1) : goTo(cur - 1);
     });
+
+    updateStepper(0);
   });
 
   /* ── scroll reveal ── */
