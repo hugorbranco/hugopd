@@ -134,6 +134,7 @@
     .master-video { padding: 24px 40px 48px; }
     .master-video-inner { position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 20px; overflow: hidden; background: #000; box-shadow: 0 32px 80px rgba(0,0,0,.18); }
     .master-video-inner iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .video-mask { position: absolute; inset: 0; z-index: 1; }
     @media(max-width:1024px) { .master-video { padding: 24px 40px 40px; } }
     @media(max-width:640px)  { .master-video { padding: 16px 20px 32px; } }
 
@@ -499,7 +500,8 @@
 
   <div class="master-video">
     <div class="master-video-inner">
-      <iframe src="https://www.youtube.com/embed/Sn8nIzfqTMc?rel=0&modestbranding=1&mute=1&autoplay=1&controls=0&loop=1&playlist=Sn8nIzfqTMc" title="POX App — Walkthrough" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      <iframe src="https://www.youtube.com/embed/Sn8nIzfqTMc?rel=0&modestbranding=1&mute=1&autoplay=1&controls=0&loop=1&playlist=Sn8nIzfqTMc&showinfo=0&iv_load_policy=3&fs=0&disablekb=1" title="POX App — Walkthrough" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy"></iframe>
+      <div class="video-mask"></div>
     </div>
   </div>
 
@@ -558,7 +560,8 @@
 
   <div class="master-video">
     <div class="master-video-inner">
-      <iframe src="https://www.youtube.com/embed/ik1wv-qCEl8?rel=0&modestbranding=1&mute=1&autoplay=1&controls=0&loop=1&playlist=ik1wv-qCEl8" title="Master — Product Walkthrough" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+      <iframe src="https://www.youtube.com/embed/ik1wv-qCEl8?rel=0&modestbranding=1&mute=1&autoplay=1&controls=0&loop=1&playlist=ik1wv-qCEl8&showinfo=0&iv_load_policy=3&fs=0&disablekb=1" title="Master — Product Walkthrough" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" loading="lazy"></iframe>
+      <div class="video-mask"></div>
     </div>
   </div>
 
@@ -887,7 +890,9 @@
   });
 
   /* ── page routing ── */
-  function showCase(id) {
+  const CASES = ['nike', 'pox', 'master'];
+
+  function _applyCase(id) {
     document.getElementById('mainContent').style.display = 'none';
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const pg = document.getElementById('page-' + id);
@@ -896,12 +901,32 @@
     document.getElementById('progressBar').style.width = '0%';
   }
 
-  function showHome() {
+  function _applyHome() {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('mainContent').style.display = '';
     window.scrollTo(0, 0);
     document.getElementById('progressBar').style.width = '0%';
   }
+
+  function showCase(id) {
+    _applyCase(id);
+    history.pushState({ case: id }, '', '#' + id);
+  }
+
+  function showHome() {
+    _applyHome();
+    history.pushState(null, '', location.pathname + location.search);
+  }
+
+  window.addEventListener('popstate', function() {
+    const hash = location.hash.slice(1);
+    if (CASES.includes(hash)) _applyCase(hash); else _applyHome();
+  });
+
+  (function() {
+    const hash = location.hash.slice(1);
+    if (CASES.includes(hash)) _applyCase(hash);
+  })();
 
   /* ── scroll reveal ── */
   const io = new IntersectionObserver(entries => entries.forEach(e => {
